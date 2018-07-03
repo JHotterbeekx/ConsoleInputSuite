@@ -18,6 +18,11 @@ namespace ConsoleInputSuite {
       return this;
     }
 
+    public ConsoleInputBuilder AddMultiSelect(string question, List<string> options) {
+      _Questions.Add(new InputMultiSelect(question, options));
+      return this;
+    }
+
     public void Render() {
       Console.Clear();
       _Questions.ForEach(x => x.Ask());
