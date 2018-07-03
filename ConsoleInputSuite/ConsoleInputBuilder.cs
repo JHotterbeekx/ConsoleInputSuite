@@ -1,14 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using ConsoleInputSuite.Input;
+using ConsoleInputSuite.Input.Interface;
 
 namespace ConsoleInputSuite {
   public class ConsoleInputBuilder {
 
-    private readonly List<InputQuestion> _Questions = new List<InputQuestion>();
+    private readonly List<IQuestion> _Questions = new List<IQuestion>();
 
-    public ConsoleInputBuilder AddQuestion(string text) {
-      _Questions.Add(new InputQuestion(text));
+    public ConsoleInputBuilder AddTextQuestion(string question) {
+      _Questions.Add(new InputQuestionText(question));
+      return this;
+    }
+
+    public ConsoleInputBuilder AddNumericQuestion(string question) {
+      _Questions.Add(new InputQuestionNumeric(question));
       return this;
     }
 

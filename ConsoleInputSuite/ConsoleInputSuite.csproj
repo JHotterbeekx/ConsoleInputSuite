@@ -41,7 +41,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ConsoleInputBuilder.cs" />
-    <Compile Include="Input\InputQuestion.cs" />
+    <Compile Include="Input\InputQuestionNumeric.cs" />
+    <Compile Include="Input\InputQuestionText.cs" />
+    <Compile Include="Input\Interface\IQuestion.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

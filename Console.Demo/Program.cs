@@ -5,9 +5,9 @@ namespace Console.Demo {
     static void Main(string[] args) {
 
       new ConsoleInputBuilder()
-        .AddQuestion("Who are you?")
-        .AddQuestion("How old are you?")
-        .AddQuestion("Where do you live?")
+        .AddTextQuestion("Who are you?")
+        .AddNumericQuestion("How old are you?")
+        .AddTextQuestion("Where do you live?")
         .Render();
 
       System.Console.ReadLine();

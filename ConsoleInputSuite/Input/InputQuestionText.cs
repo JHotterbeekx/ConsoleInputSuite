@@ -1,12 +1,13 @@
 ﻿using System;
+using ConsoleInputSuite.Input.Interface;
 
 namespace ConsoleInputSuite.Input {
-  public class InputQuestion {
+  public class InputQuestionText : IQuestion {
 
     private string _Question;
     private string _Answer;
 
-    public InputQuestion(string question) {
+    public InputQuestionText(string question) {
       _Question = question;
     }
 
