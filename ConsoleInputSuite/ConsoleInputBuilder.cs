@@ -19,7 +19,17 @@ namespace ConsoleInputSuite {
     }
 
     public ConsoleInputBuilder AddMultiSelect(string question, List<string> options) {
-      _Questions.Add(new InputMultiSelect(question, options));
+      _Questions.Add(new InputMultiSelect(question, new List<InputMultiSelectOption> {
+        new InputMultiSelectOption("1", "Option 1"),
+        new InputMultiSelectOption("2", "Option 2", new List<InputMultiSelectOption> {
+          new InputMultiSelectOption("2a", "Option 2a"),
+          new InputMultiSelectOption("2b", "Option 2b"),
+          new InputMultiSelectOption("2c", "Option 2c"),
+        }),
+        new InputMultiSelectOption("3", "Option 3"),
+        new InputMultiSelectOption("4", "Option 4"),
+        new InputMultiSelectOption("5", "Option 5"),
+      }));
       return this;
     }
 

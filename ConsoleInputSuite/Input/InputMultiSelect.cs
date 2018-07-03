@@ -1,27 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using ConsoleInputSuite.Input.Interface;
 
 namespace ConsoleInputSuite.Input {
   public class InputMultiSelect : IQuestion {
 
     private readonly string _Question;
-    private readonly List<string> _Options = new List<string>();
-    private List<int> _AnswerIndexes = new List<int>();
+    private readonly List<InputMultiSelectOption> _Options;
 
-    public InputMultiSelect(string question, List<string> options) {
+    public InputMultiSelect(string question, List<InputMultiSelectOption> options) {
       _Question = question;
       _Options = options;
     }
 
     public void Ask() {
-      _RenderText();
+      _Draw();
       _ReadAnswer();
     }
 
     private void _ReadAnswer() {
       var activeIndex = 0;
-      _AnswerIndexes = new List<int>();
 
       while (true) {
         var inputCharacter = Console.ReadKey(true);
@@ -36,41 +35,46 @@ namespace ConsoleInputSuite.Input {
         }
 
         if (inputCharacter.Key == ConsoleKey.DownArrow) {
-          activeIndex = Math.Min(_Options.Count - 1, activeIndex + 1);
+          activeIndex = Math.Min(_Options.Count + _Options.SelectMany(x => x.Children).Count() - 1, activeIndex + 1);
         }
 
         if (inputCharacter.Key == ConsoleKey.Spacebar) {
-          if (_AnswerIndexes.Contains(activeIndex)) _AnswerIndexes.Remove(activeIndex);
-          _AnswerIndexes.Add(activeIndex);
+          _Options[activeIndex].Selected = !_Options[activeIndex].Selected;
         }
 
-
-        _RenderText(activeIndex);
+        _Draw(activeIndex);
       }
     }
 
-    private void _RenderText(int selected = 0) {
+    private void _Draw(int activeIndex = 0) {
       Console.CursorLeft = 0;
       Console.CursorTop = 0;
       Console.WriteLine(_Question);
-      for (int i = 0; i < _Options.Count; i++) {
-        if (i == selected) {
+
+      _RenderText(_Options, activeIndex);
+    }
+
+    private void _RenderText(List<InputMultiSelectOption> options, int selected = 0, int level = 0, int renderedIndex = 0) {
+      for (int i = 0; i < options.Count; i++) {
+        if (renderedIndex == selected) {
           Console.BackgroundColor = ConsoleColor.Gray;
           Console.ForegroundColor = ConsoleColor.Black;
         }
 
-        Console.WriteLine($"[{(_AnswerIndexes.Contains(i) ? "X" : " ")}] {_Options[i]}");
-
+        Console.WriteLine($"{new String(' ', level * 2)}[{(options[i].Selected ? "X" : " ")}] {options[i].Text}");
         Console.ResetColor();
+        renderedIndex++;
+
+        if (options[i].Children.Any()) {
+          _RenderText(options[i].Children, selected, level + 1, renderedIndex);
+          renderedIndex += options[i].Children.Count;
+        } 
       }
     }
 
     public void ShowAnswer() {
       Console.WriteLine(_Question);
-      for (int i = 0; i < _Options.Count; i++) {
-        if (!_AnswerIndexes.Contains(i)) continue;
-        Console.WriteLine($"> {_Options[i]}");
-      }
+      _Options.Where(x => x.Selected).ToList().ForEach(x => Console.WriteLine($"> {x.Text}"));
     }
   }
 }

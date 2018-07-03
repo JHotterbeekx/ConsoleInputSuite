@@ -42,6 +42,7 @@
   <ItemGroup>
     <Compile Include="ConsoleInputBuilder.cs" />
     <Compile Include="Input\InputMultiSelect.cs" />
+    <Compile Include="Input\InputMultiSelectOption.cs" />
     <Compile Include="Input\InputQuestionNumeric.cs" />
     <Compile Include="Input\InputQuestionText.cs" />
     <Compile Include="Input\Interface\IQuestion.cs" />
