@@ -1,12 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using ConsoleInputSuite;
 
 namespace Console.Demo {
   class Program {
     static void Main(string[] args) {
+
+      new ConsoleInputBuilder()
+        .AddQuestion("Who are you?")
+        .AddQuestion("How old are you?")
+        .AddQuestion("Where do you live?")
+        .Render();
+
+      System.Console.ReadLine();
     }
   }
 }
