@@ -32,7 +32,7 @@ namespace ConsoleInputSuite.Input {
           Option = option,
           ParentIndex = parentIndex,
           Level = level,
-          Selected = false
+          Selected = InputMultiSelectToggleState.Off
         });
 
         if (option.Children != null) _FlattenOptions(option.Children, ref flatOptions, nextIndex, level +1);
@@ -66,14 +66,35 @@ namespace ConsoleInputSuite.Input {
       }
     }
 
-    private void _ToggleIndex(int index, bool? forceSelected = null) {
+    private void _ToggleIndex(int index, InputMultiSelectToggleState? forceSelected = null) {
       var option = _InternalOptions[index];
-      var newSelectedValue = forceSelected ?? !option.Selected;
+      var newSelectedValue = forceSelected ?? _GetSelectedToggleValue(option.Selected);
 
       option.Selected = newSelectedValue;
       foreach (var child in _InternalOptions.Where(i => i.ParentIndex == index)) {
         child.Selected = newSelectedValue;
         _ToggleIndex(child.Index, newSelectedValue);
+      }
+
+      if (!forceSelected.HasValue) {
+        int? parentIndex = option.ParentIndex;
+
+        while (parentIndex.HasValue) {
+          var siblings = _InternalOptions.Where(i => i.ParentIndex == parentIndex).ToList();
+          var parent = _InternalOptions.FirstOrDefault(i => i.Index == parentIndex);
+
+          if (siblings.All(x => x.Selected == InputMultiSelectToggleState.On)) {
+            parent.Selected = InputMultiSelectToggleState.On;
+          }
+          else if (siblings.All(x => x.Selected == InputMultiSelectToggleState.Off)) {
+            parent.Selected = InputMultiSelectToggleState.Off;
+          }
+          else {
+            parent.Selected = InputMultiSelectToggleState.Indeterminate;
+          }
+
+          parentIndex = parent.ParentIndex;
+        }
       }
     }
 
@@ -96,8 +117,28 @@ namespace ConsoleInputSuite.Input {
         }
 
 
-        Console.WriteLine($"{new String(' ', option.Level * 2)}[{(option.Selected ? "X" : " ")}] {option.Option.Text}");
+        Console.WriteLine($"{new String(' ', option.Level * 2)}[{_ShowToggleState(option.Selected)}] {option.Option.Text}");
         Console.ResetColor();
+      }
+    }
+
+    private string _ShowToggleState(InputMultiSelectToggleState toggleState) {
+      switch (toggleState) {
+        case InputMultiSelectToggleState.On:
+          return "X";
+        case InputMultiSelectToggleState.Indeterminate:
+          return "O";
+        default:
+          return " ";
+      }
+    }
+
+    private InputMultiSelectToggleState _GetSelectedToggleValue(InputMultiSelectToggleState toggleState) {
+      switch (toggleState) {
+        case InputMultiSelectToggleState.On:
+          return InputMultiSelectToggleState.Off;
+        default:
+          return InputMultiSelectToggleState.On;
       }
     }
 
@@ -111,7 +152,13 @@ namespace ConsoleInputSuite.Input {
       public int Index;
       public int? ParentIndex;
       public int Level;
-      public bool Selected;
+      public InputMultiSelectToggleState Selected;
+    }
+
+    private enum InputMultiSelectToggleState {
+      On,
+      Off,
+      Indeterminate
     }
   }
 
