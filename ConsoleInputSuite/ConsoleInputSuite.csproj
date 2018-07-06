@@ -40,7 +40,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ConsoleInputBuilder.cs" />
     <Compile Include="Input\InputMultiSelect.cs" />
     <Compile Include="Input\InputMultiSelectOption.cs" />
     <Compile Include="Input\InputQuestionNumeric.cs" />

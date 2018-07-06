@@ -1,17 +1,22 @@
 ﻿using System.Collections.Generic;
-using ConsoleInputSuite;
+using System;
+using System.Linq;
+using ConsoleInputSuite.Input;
 
 namespace Console.Demo {
   class Program {
     static void Main(string[] args) {
 
-      new ConsoleInputBuilder()
-        //.AddTextQuestion("Who are you?")
-        //.AddNumericQuestion("How old are you?")
-        //.AddTextQuestion("Where do you live?")
-        .AddMultiSelect("What options?", new List<string> { "Option 1", "Option 2", "Option 3", "Option 4", "Option 5"})
-        .Render();
+      var selected = new InputMultiSelect("Select the shizzle",
+                                          new List<InputMultiSelectOption> {
+                                            new InputMultiSelectOption(1, "Option 1"),
+                                            new InputMultiSelectOption(2, "Option 2"),
+                                            new InputMultiSelectOption(3, "Option 3"),
+                                          }).Ask();
 
+      System.Console.WriteLine();
+      System.Console.WriteLine("Answers:");
+      selected.ToList().ForEach(x => System.Console.WriteLine($" the value {x}"));
       System.Console.ReadLine();
     }
   }

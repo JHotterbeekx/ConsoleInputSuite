@@ -1,24 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using ConsoleInputSuite.Input.Interface;
 
 namespace ConsoleInputSuite.Input {
-  public class InputMultiSelect : IQuestion {
+  public class InputMultiSelect {
 
     private readonly string _Question;
-    private readonly List<InputMultiSelectOption> _Options;
-    private readonly List<InputMultiSelectOptionWrapper> _InternalOptions;
+    private readonly List<InputMultiSelectOptionWrapper> _Options;
 
     public InputMultiSelect(string question, List<InputMultiSelectOption> options) {
       _Question = question;
-      _Options = options;
-      _FlattenOptions(options, ref _InternalOptions);
+      _FlattenOptions(options, ref _Options);
     }
 
-    public void Ask() {
+    public IEnumerable<dynamic> Ask() {
       _Draw();
       _ReadAnswer();
+      return _GetSelected();
+    }
+
+    private IEnumerable<dynamic> _GetSelected() {
+      return _Options.Where(i => i.Selected == InputMultiSelectToggleState.On).Select(x => x.Option.Value);
     }
 
     private void _FlattenOptions(List<InputMultiSelectOption> options, ref List<InputMultiSelectOptionWrapper> flatOptions, int? parentIndex = null, int level = 0) {
@@ -55,7 +57,7 @@ namespace ConsoleInputSuite.Input {
         }
 
         if (inputCharacter.Key == ConsoleKey.DownArrow) {
-          activeIndex = Math.Min(_Options.Count + _Options.SelectMany(x => x.Children).Count() - 1, activeIndex + 1);
+          activeIndex = Math.Min(_Options.Count - 1, activeIndex + 1);
         }
 
         if (inputCharacter.Key == ConsoleKey.Spacebar) {
@@ -67,11 +69,11 @@ namespace ConsoleInputSuite.Input {
     }
 
     private void _ToggleIndex(int index, InputMultiSelectToggleState? forceSelected = null) {
-      var option = _InternalOptions[index];
+      var option = _Options[index];
       var newSelectedValue = forceSelected ?? _GetSelectedToggleValue(option.Selected);
 
       option.Selected = newSelectedValue;
-      foreach (var child in _InternalOptions.Where(i => i.ParentIndex == index)) {
+      foreach (var child in _Options.Where(i => i.ParentIndex == index)) {
         child.Selected = newSelectedValue;
         _ToggleIndex(child.Index, newSelectedValue);
       }
@@ -80,8 +82,8 @@ namespace ConsoleInputSuite.Input {
         int? parentIndex = option.ParentIndex;
 
         while (parentIndex.HasValue) {
-          var siblings = _InternalOptions.Where(i => i.ParentIndex == parentIndex).ToList();
-          var parent = _InternalOptions.FirstOrDefault(i => i.Index == parentIndex);
+          var siblings = _Options.Where(i => i.ParentIndex == parentIndex).ToList();
+          var parent = _Options.FirstOrDefault(i => i.Index == parentIndex);
 
           if (siblings.All(x => x.Selected == InputMultiSelectToggleState.On)) {
             parent.Selected = InputMultiSelectToggleState.On;
@@ -103,7 +105,7 @@ namespace ConsoleInputSuite.Input {
       Console.CursorTop = 0;
       Console.WriteLine(_Question);
 
-      _RenderText(_InternalOptions, activeIndex);
+      _RenderText(_Options, activeIndex);
     }
 
     private void _RenderText(List<InputMultiSelectOptionWrapper> options, int selected) {
@@ -127,7 +129,7 @@ namespace ConsoleInputSuite.Input {
         case InputMultiSelectToggleState.On:
           return "X";
         case InputMultiSelectToggleState.Indeterminate:
-          return "O";
+          return "-";
         default:
           return " ";
       }
@@ -140,11 +142,6 @@ namespace ConsoleInputSuite.Input {
         default:
           return InputMultiSelectToggleState.On;
       }
-    }
-
-    public void ShowAnswer() {
-      Console.WriteLine(_Question);
-      _Options.Where(x => x.Selected).ToList().ForEach(x => Console.WriteLine($"> {x.Text}"));
     }
 
     private class InputMultiSelectOptionWrapper {
