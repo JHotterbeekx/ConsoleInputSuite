@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{FA882BA4-8945-4D0C-AC33-063EB64B47C0}</ProjectGuid>
+    <ProjectGuid>{D99CDC59-B724-4901-A74A-BF70430499D1}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>Console.Demo</RootNamespace>
-    <AssemblyName>Console.Demo</AssemblyName>
+    <RootNamespace>Demo</RootNamespace>
+    <AssemblyName>Demo</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -47,12 +47,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\ConsoleInputSuite\ConsoleInputSuite.csproj">
-      <Project>{2f52f7bb-9104-45c6-8138-d4613f57a79a}</Project>
-      <Name>ConsoleInputSuite</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

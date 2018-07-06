@@ -3,7 +3,7 @@ using System;
 using System.Linq;
 using ConsoleInputSuite.Input;
 
-namespace Console.Demo {
+namespace Demo {
   class Program {
     static void Main(string[] args) {
 
@@ -14,10 +14,10 @@ namespace Console.Demo {
                                             new InputMultiSelectOption(3, "Option 3"),
                                           }).Ask();
 
-      System.Console.WriteLine();
-      System.Console.WriteLine("Answers:");
-      selected.ToList().ForEach(x => System.Console.WriteLine($" the value {x}"));
-      System.Console.ReadLine();
+      Console.WriteLine();
+      Console.WriteLine("Answers:");
+      selected.ToList().ForEach(x => Console.WriteLine($" the value {x}"));
+      Console.ReadLine();
     }
   }
 }
