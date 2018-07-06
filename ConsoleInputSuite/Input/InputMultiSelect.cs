@@ -8,15 +8,35 @@ namespace ConsoleInputSuite.Input {
 
     private readonly string _Question;
     private readonly List<InputMultiSelectOption> _Options;
+    private readonly List<InputMultiSelectOptionWrapper> _InternalOptions;
 
     public InputMultiSelect(string question, List<InputMultiSelectOption> options) {
       _Question = question;
       _Options = options;
+      _FlattenOptions(options, ref _InternalOptions);
     }
 
     public void Ask() {
       _Draw();
       _ReadAnswer();
+    }
+
+    private void _FlattenOptions(List<InputMultiSelectOption> options, ref List<InputMultiSelectOptionWrapper> flatOptions, int? parentIndex = null, int level = 0) {
+      if (flatOptions == null) flatOptions = new List<InputMultiSelectOptionWrapper>();
+
+      foreach (var option in options) {
+        int nextIndex = flatOptions.Any() ? flatOptions.Max(x => x.Index) : 0;
+
+        flatOptions.Add(new InputMultiSelectOptionWrapper {
+          Index = nextIndex,
+          Option = option,
+          ParentIndex = parentIndex,
+          Level = level,
+          Selected = false
+        });
+
+        if (option.Children != null) _FlattenOptions(option.Children, ref flatOptions, nextIndex, level +1);
+      }
     }
 
     private void _ReadAnswer() {
@@ -39,7 +59,7 @@ namespace ConsoleInputSuite.Input {
         }
 
         if (inputCharacter.Key == ConsoleKey.Spacebar) {
-          _Options[activeIndex].Selected = !_Options[activeIndex].Selected;
+          _InternalOptions[activeIndex].Selected = !_InternalOptions[activeIndex].Selected;
         }
 
         _Draw(activeIndex);
@@ -51,24 +71,22 @@ namespace ConsoleInputSuite.Input {
       Console.CursorTop = 0;
       Console.WriteLine(_Question);
 
-      _RenderText(_Options, activeIndex);
+      _RenderText(_InternalOptions, activeIndex);
     }
 
-    private void _RenderText(List<InputMultiSelectOption> options, int selected = 0, int level = 0, int renderedIndex = 0) {
-      for (int i = 0; i < options.Count; i++) {
+    private void _RenderText(List<InputMultiSelectOptionWrapper> options, int selected) {
+      if (options == null) return;
+
+      for (int renderedIndex = 0; renderedIndex < options.Count; renderedIndex++) {
+        var option = options[renderedIndex];
         if (renderedIndex == selected) {
           Console.BackgroundColor = ConsoleColor.Gray;
           Console.ForegroundColor = ConsoleColor.Black;
         }
 
-        Console.WriteLine($"{new String(' ', level * 2)}[{(options[i].Selected ? "X" : " ")}] {options[i].Text}");
-        Console.ResetColor();
-        renderedIndex++;
 
-        if (options[i].Children.Any()) {
-          _RenderText(options[i].Children, selected, level + 1, renderedIndex);
-          renderedIndex += options[i].Children.Count;
-        } 
+        Console.WriteLine($"{new String(' ', option.Level * 2)}[{(option.Selected ? "X" : " ")}] {option.Option.Text}");
+        Console.ResetColor();
       }
     }
 
@@ -76,5 +94,15 @@ namespace ConsoleInputSuite.Input {
       Console.WriteLine(_Question);
       _Options.Where(x => x.Selected).ToList().ForEach(x => Console.WriteLine($"> {x.Text}"));
     }
+
+    private class InputMultiSelectOptionWrapper {
+      public InputMultiSelectOption Option;
+      public int Index;
+      public int? ParentIndex;
+      public int Level;
+      public bool Selected;
+    }
   }
+
+  
 }
