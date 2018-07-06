@@ -25,7 +25,7 @@ namespace ConsoleInputSuite.Input {
       if (flatOptions == null) flatOptions = new List<InputMultiSelectOptionWrapper>();
 
       foreach (var option in options) {
-        int nextIndex = flatOptions.Any() ? flatOptions.Max(x => x.Index) : 0;
+        int nextIndex = flatOptions.Any() ? flatOptions.Max(x => x.Index) + 1: 0;
 
         flatOptions.Add(new InputMultiSelectOptionWrapper {
           Index = nextIndex,
@@ -59,10 +59,21 @@ namespace ConsoleInputSuite.Input {
         }
 
         if (inputCharacter.Key == ConsoleKey.Spacebar) {
-          _InternalOptions[activeIndex].Selected = !_InternalOptions[activeIndex].Selected;
+          _ToggleIndex(activeIndex);
         }
 
         _Draw(activeIndex);
+      }
+    }
+
+    private void _ToggleIndex(int index, bool? forceSelected = null) {
+      var option = _InternalOptions[index];
+      var newSelectedValue = forceSelected ?? !option.Selected;
+
+      option.Selected = newSelectedValue;
+      foreach (var child in _InternalOptions.Where(i => i.ParentIndex == index)) {
+        child.Selected = newSelectedValue;
+        _ToggleIndex(child.Index, newSelectedValue);
       }
     }
 
