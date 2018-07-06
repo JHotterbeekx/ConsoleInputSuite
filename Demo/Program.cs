@@ -10,7 +10,10 @@ namespace Demo {
       var selected = new InputMultiSelect("Select the shizzle",
                                           new List<InputMultiSelectOption> {
                                             new InputMultiSelectOption(1, "Option 1"),
-                                            new InputMultiSelectOption(2, "Option 2"),
+                                            new InputMultiSelectOption(2, "Option 2", new List<InputMultiSelectOption> {
+                                              new InputMultiSelectOption(21, "Option 2.1"),
+                                              new InputMultiSelectOption(22, "Option 2.2"),
+                                            }),
                                             new InputMultiSelectOption(3, "Option 3"),
                                           }).Ask();
 

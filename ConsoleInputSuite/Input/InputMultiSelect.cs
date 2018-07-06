@@ -20,7 +20,7 @@ namespace ConsoleInputSuite.Input {
     }
 
     private IEnumerable<dynamic> _GetSelected() {
-      return _Options.Where(i => i.Selected == InputMultiSelectToggleState.On).Select(x => x.Option.Value);
+      return _Options.Where(i => i.Selected == InputMultiSelectToggleState.On && !i.IsParent).Select(x => x.Option.Value);
     }
 
     private void _FlattenOptions(List<InputMultiSelectOption> options, ref List<InputMultiSelectOptionWrapper> flatOptions, int? parentIndex = null, int level = 0) {
@@ -34,6 +34,7 @@ namespace ConsoleInputSuite.Input {
           Option = option,
           ParentIndex = parentIndex,
           Level = level,
+          IsParent = option.Children != null && option.Children.Any(),
           Selected = InputMultiSelectToggleState.Off
         });
 
@@ -148,6 +149,7 @@ namespace ConsoleInputSuite.Input {
       public InputMultiSelectOption Option;
       public int Index;
       public int? ParentIndex;
+      public bool IsParent;
       public int Level;
       public InputMultiSelectToggleState Selected;
     }
