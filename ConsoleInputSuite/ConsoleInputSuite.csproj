@@ -40,12 +40,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Input\InputMultiSelect.cs" />
-    <Compile Include="Input\InputMultiSelectOption.cs" />
+    <Compile Include="Input\MultiSelect\InputMultiSelect.cs" />
+    <Compile Include="Input\MultiSelect\InputMultiSelectOption.cs" />
     <Compile Include="Input\InputQuestionNumeric.cs" />
     <Compile Include="Input\InputQuestionText.cs" />
     <Compile Include="Input\Interface\IQuestion.cs" />
+    <Compile Include="Input\MultiSelect\InputMultiSelectSettings.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="NewFolder1\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

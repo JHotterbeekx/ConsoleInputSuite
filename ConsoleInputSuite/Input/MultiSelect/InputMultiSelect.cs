@@ -2,13 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace ConsoleInputSuite.Input {
+namespace ConsoleInputSuite.Input.MultiSelect {
   public class InputMultiSelect {
 
     private readonly string _Question;
     private readonly List<InputMultiSelectOptionWrapper> _Options;
+    private readonly InputMultiSelectSettings _Settings;
 
-    public InputMultiSelect(string question, List<InputMultiSelectOption> options) {
+    public InputMultiSelect(string question, List<InputMultiSelectOption> options, InputMultiSelectSettings settings = null) {
+      _Settings = settings ?? new InputMultiSelectSettings();
       _Question = question;
       _FlattenOptions(options, ref _Options);
     }
@@ -20,7 +22,12 @@ namespace ConsoleInputSuite.Input {
     }
 
     private IEnumerable<dynamic> _GetSelected() {
-      return _Options.Where(i => i.Selected == InputMultiSelectToggleState.On && !i.IsParent).Select(x => x.Option.Value);
+      IEnumerable<InputMultiSelectOptionWrapper> optionsToReturn = _Options.Where(i => i.Selected != InputMultiSelectToggleState.Off);
+
+      if (!_Settings.ReturnIndeterminateParentValues) optionsToReturn = optionsToReturn.Where(i => i.Selected == InputMultiSelectToggleState.On);
+      if (!_Settings.ReturnOnlySelectedChildValues) optionsToReturn = optionsToReturn.Where(i => !i.IsParent);
+
+      return optionsToReturn.Select(x => x.Option.Value);
     }
 
     private void _FlattenOptions(List<InputMultiSelectOption> options, ref List<InputMultiSelectOptionWrapper> flatOptions, int? parentIndex = null, int level = 0) {

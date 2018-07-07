@@ -2,10 +2,14 @@
 using System;
 using System.Linq;
 using ConsoleInputSuite.Input;
+using ConsoleInputSuite.Input.MultiSelect;
 
 namespace Demo {
   class Program {
     static void Main(string[] args) {
+
+      Console.Clear();
+      Console.WriteLine("Lets go");
 
       var selected = new InputMultiSelect("Select the shizzle",
                                           new List<InputMultiSelectOption> {

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace ConsoleInputSuite.Input {
+namespace ConsoleInputSuite.Input.MultiSelect {
   public class InputMultiSelectOption {
 
     public string Text;
