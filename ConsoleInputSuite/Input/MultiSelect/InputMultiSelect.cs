@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using ConsoleInputSuite.Renderer;
 
 namespace ConsoleInputSuite.Input.MultiSelect {
   public class InputMultiSelect {
@@ -8,11 +9,13 @@ namespace ConsoleInputSuite.Input.MultiSelect {
     private readonly string _Question;
     private readonly List<InputMultiSelectOptionWrapper> _Options;
     private readonly InputMultiSelectSettings _Settings;
+    private readonly ConsoleRenderer _ConsoleRenderer;
 
     public InputMultiSelect(string question, List<InputMultiSelectOption> options, InputMultiSelectSettings settings = null) {
       _Settings = settings ?? new InputMultiSelectSettings();
       _Question = question;
       _FlattenOptions(options, ref _Options);
+      _ConsoleRenderer = new ConsoleRenderer();
     }
 
     public IEnumerable<dynamic> Ask() {
@@ -119,17 +122,9 @@ namespace ConsoleInputSuite.Input.MultiSelect {
     private void _RenderText(List<InputMultiSelectOptionWrapper> options, int selected) {
       if (options == null) return;
 
-      for (int renderedIndex = 0; renderedIndex < options.Count; renderedIndex++) {
-        var option = options[renderedIndex];
-        if (renderedIndex == selected) {
-          Console.BackgroundColor = ConsoleColor.Gray;
-          Console.ForegroundColor = ConsoleColor.Black;
-        }
+      _ConsoleRenderer.Draw(options.Select(option => $"{new String(' ', option.Level * 2)}[{_ShowToggleState(option.Selected)}] {option.Option.Text}").ToArray(), selected);
 
-
-        Console.WriteLine($"{new String(' ', option.Level * 2)}[{_ShowToggleState(option.Selected)}] {option.Option.Text}");
-        Console.ResetColor();
-      }
+      
     }
 
     private string _ShowToggleState(InputMultiSelectToggleState toggleState) {

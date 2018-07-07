@@ -47,9 +47,8 @@
     <Compile Include="Input\Interface\IQuestion.cs" />
     <Compile Include="Input\MultiSelect\InputMultiSelectSettings.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Renderer\ConsoleRenderer.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="NewFolder1\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
